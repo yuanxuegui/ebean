@@ -585,6 +585,13 @@ public class DeployBeanProperty {
     this.dbUpdateable = false;
   }
 
+  public void setAggregation(String value) {
+
+    this.dbRead = true;
+    this.dbInsertable = false;
+    this.dbUpdateable = false;
+  }
+
   public String getElPlaceHolder() {
     if (sqlFormulaSelect != null) {
       return sqlFormulaSelect;

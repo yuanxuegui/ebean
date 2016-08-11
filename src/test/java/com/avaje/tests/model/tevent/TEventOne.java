@@ -1,5 +1,8 @@
 package com.avaje.tests.model.tevent;
 
+import com.avaje.ebean.annotation.Aggregation;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -21,7 +24,10 @@ public class TEventOne {
   @OneToOne
   TEvent event;
 
-  @OneToMany(mappedBy = "one")
+  @Aggregation("count(many)")
+  Long totalCount;
+
+  @OneToMany(mappedBy = "one", cascade = CascadeType.ALL)
   List<TEventMany> many;
 
   public Long getId() {
@@ -30,6 +36,14 @@ public class TEventOne {
 
   public void setId(Long id) {
     this.id = id;
+  }
+
+  public Long getTotalCount() {
+    return totalCount;
+  }
+
+  public void setTotalCount(Long totalCount) {
+    this.totalCount = totalCount;
   }
 
   public String getOne() {
