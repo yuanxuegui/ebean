@@ -160,6 +160,7 @@ public class DeployBeanProperty {
    */
   private String dbColumn;
 
+  private String aggregationPrefix;
   private String aggregation;
 
   private String sqlFormulaSelect;
@@ -603,9 +604,17 @@ public class DeployBeanProperty {
     this.dbUpdateable = false;
   }
 
+  /**
+   * Set the path to the aggregation.
+   */
+  public void setAggregationPrefix(String aggregationPrefix) {
+    this.aggregationPrefix = aggregationPrefix;
+    this.aggregation = aggregation.replace(aggregationPrefix, "u1");
+  }
+
   public String getElPrefix() {
     if (aggregation != null) {
-      return "details";//TODO: aggregrationPrefix
+      return aggregationPrefix;
     } else {
       return secondaryTableJoinPrefix;
     }

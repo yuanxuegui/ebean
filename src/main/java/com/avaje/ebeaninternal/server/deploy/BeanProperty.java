@@ -915,7 +915,7 @@ public class BeanProperty implements ElPropertyValue, Property {
   }
 
   public String getElPrefix() {
-    return elPrefix;//secondaryTableJoinPrefix;
+    return elPrefix;
   }
 
   /**

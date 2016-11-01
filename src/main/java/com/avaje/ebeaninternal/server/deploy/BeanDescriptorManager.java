@@ -38,7 +38,6 @@ import com.avaje.ebeaninternal.server.deploy.meta.DeployBeanPropertyAssocMany;
 import com.avaje.ebeaninternal.server.deploy.meta.DeployBeanPropertyAssocOne;
 import com.avaje.ebeaninternal.server.deploy.meta.DeployBeanTable;
 import com.avaje.ebeaninternal.server.deploy.meta.DeployTableJoin;
-import com.avaje.ebeaninternal.server.deploy.parse.AnnotationBase;
 import com.avaje.ebeaninternal.server.deploy.parse.DeployBeanInfo;
 import com.avaje.ebeaninternal.server.deploy.parse.DeployCreateProperties;
 import com.avaje.ebeaninternal.server.deploy.parse.DeployInherit;
@@ -1353,15 +1352,7 @@ public class BeanDescriptorManager implements BeanDescriptorMap {
         prop.setSetter(beanReflect.getSetter(propertyIndex));
 
         if (prop.isAggregation()) {
-
-          String aggregation = prop.getAggregation();
-          // evaluate the elPrefix
-          // evaluate the expression
-          DeployBeanProperty details = desc.getBeanProperty("details");
-          if (details instanceof DeployBeanPropertyAssocMany<?>) {
-            DeployBeanPropertyAssocMany<?> many = (DeployBeanPropertyAssocMany<?>)details;
-            DeployBeanDescriptor<?> targetDesc = many.getTargetDeploy();
-          }
+          prop.setAggregationPrefix(DetermineAggPath.manyPath(prop.getAggregation(), desc));
         }
       }
     }

@@ -24,17 +24,17 @@ public class TEventOne {
   @OneToOne
   TEvent event;
 
-  @Aggregation("count(u1.*)")
+  @Aggregation("count(logs.*)")
   Long count;
 
-  @Aggregation("sum(u1.units)")
+  @Aggregation("sum(logs.units)")
   Double totalUnits;
 
-  @Aggregation("sum(u1.units * u1.amount)")
+  @Aggregation("sum(logs.units * logs.amount)")
   Double totalAmount;
 
   @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
-  List<TEventMany> details;
+  List<TEventMany> logs;
 
   public TEventOne(String name) {
     this.name = name;
@@ -84,11 +84,11 @@ public class TEventOne {
     this.event = event;
   }
 
-  public List<TEventMany> getDetails() {
-    return details;
+  public List<TEventMany> getLogs() {
+    return logs;
   }
 
-  public void setDetails(List<TEventMany> details) {
-    this.details = details;
+  public void setLogs(List<TEventMany> logs) {
+    this.logs = logs;
   }
 }
