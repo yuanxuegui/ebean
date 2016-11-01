@@ -16,7 +16,7 @@ public class TEventOne {
   @Id
   Long id;
 
-  String one;
+  String name;
 
   @Version
   Long version;
@@ -24,11 +24,21 @@ public class TEventOne {
   @OneToOne
   TEvent event;
 
-  @Aggregation("count(many)")
-  Long totalCount;
+  @Aggregation("count(u1.*)")
+  Long count;
 
-  @OneToMany(mappedBy = "one", cascade = CascadeType.ALL)
-  List<TEventMany> many;
+  @Aggregation("sum(u1.units)")
+  Double totalUnits;
+
+  @Aggregation("sum(u1.units * u1.amount)")
+  Double totalAmount;
+
+  @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
+  List<TEventMany> details;
+
+  public TEventOne(String name) {
+    this.name = name;
+  }
 
   public Long getId() {
     return id;
@@ -38,20 +48,24 @@ public class TEventOne {
     this.id = id;
   }
 
-  public Long getTotalCount() {
-    return totalCount;
+  public Long getCount() {
+    return count;
   }
 
-  public void setTotalCount(Long totalCount) {
-    this.totalCount = totalCount;
+  public Double getTotalUnits() {
+    return totalUnits;
   }
 
-  public String getOne() {
-    return one;
+  public Double getTotalAmount() {
+    return totalAmount;
   }
 
-  public void setOne(String one) {
-    this.one = one;
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
   }
 
   public Long getVersion() {
@@ -70,11 +84,11 @@ public class TEventOne {
     this.event = event;
   }
 
-  public List<TEventMany> getMany() {
-    return many;
+  public List<TEventMany> getDetails() {
+    return details;
   }
 
-  public void setMany(List<TEventMany> many) {
-    this.many = many;
+  public void setDetails(List<TEventMany> details) {
+    this.details = details;
   }
 }

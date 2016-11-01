@@ -15,6 +15,7 @@ import com.avaje.ebeaninternal.server.deploy.TableJoin;
 import com.avaje.ebeaninternal.server.el.ElPropertyValue;
 import com.avaje.ebeaninternal.server.querydefn.OrmQueryDetail;
 import com.avaje.ebeaninternal.server.querydefn.OrmQueryProperties;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -129,17 +130,19 @@ public class SqlTreeBuilder {
     String selectSql = null;
     String fromSql = null;
     String inheritanceWhereSql = null;
+    String groupBy = null;
     BeanProperty[] encryptedProps = null;
     if (!rawSql) {
       selectSql = buildSelectClause();
       fromSql = buildFromClause();
       inheritanceWhereSql = buildWhereClause();
+      groupBy = buildGroupByClause();
       encryptedProps = ctx.getEncryptedProps();
     }
 
     boolean includeJoins = (alias == null) ? false : alias.isIncludeJoins();
 
-    return new SqlTree(summary.toString(), rootNode, selectSql, fromSql, inheritanceWhereSql, encryptedProps,
+    return new SqlTree(summary.toString(), rootNode, selectSql, fromSql, groupBy, inheritanceWhereSql, encryptedProps,
         manyProperty, queryDetail.getFetchPaths(), includeJoins);
   }
 
@@ -149,15 +152,28 @@ public class SqlTreeBuilder {
       return "Not Used";
     }
     rootNode.appendSelect(ctx, subQuery);
+    return trimComma(ctx.getContent());
+  }
 
-    String selectSql = ctx.getContent();
+  private String buildGroupByClause() {
 
-    // trim off the first comma
-    if (selectSql.length() >= SqlTreeNode.COMMA.length()) {
-      selectSql = selectSql.substring(SqlTreeNode.COMMA.length());
+    if (rawSql || !rootNode.isAggregation()) {
+      return null;
     }
+    ctx.startGroupBy();
+    rootNode.appendGroupBy(ctx, subQuery);
+    String groupBy = ctx.getContent();
+    return trimComma(groupBy);
+  }
 
-    return selectSql;
+  /**
+   * Trim the first comma.
+   */
+  private String trimComma(String groupBy) {
+    if (groupBy.length() >= SqlTreeNode.COMMA.length()) {
+      groupBy = groupBy.substring(SqlTreeNode.COMMA.length());
+    }
+    return groupBy;
   }
 
   private String buildWhereClause() {

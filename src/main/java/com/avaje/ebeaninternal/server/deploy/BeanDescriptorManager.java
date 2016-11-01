@@ -381,13 +381,13 @@ public class BeanDescriptorManager implements BeanDescriptorMap {
     try {
       entityClass = Class.forName(entityClassName, false, classLoader);
     } catch (Exception e) {
-      logger.error("Could not load entity bean class "+entityClassName+" for ebean.xml entry");
+      logger.error("Could not load entity bean class " + entityClassName + " for ebean.xml entry");
       return;
     }
 
     DeployBeanInfo<?> info = deployInfoMap.get(entityClass);
     if (info == null) {
-      logger.error("No entity bean for ebean.xml entry "+entityClassName);
+      logger.error("No entity bean for ebean.xml entry " + entityClassName);
 
     } else {
       for (XmRawSql sql : entityDeploy.getRawSql()) {
@@ -1351,6 +1351,18 @@ public class BeanDescriptorManager implements BeanDescriptorMap {
         prop.setPropertyIndex(propertyIndex);
         prop.setGetter(beanReflect.getGetter(propertyIndex));
         prop.setSetter(beanReflect.getSetter(propertyIndex));
+
+        if (prop.isAggregation()) {
+
+          String aggregation = prop.getAggregation();
+          // evaluate the elPrefix
+          // evaluate the expression
+          DeployBeanProperty details = desc.getBeanProperty("details");
+          if (details instanceof DeployBeanPropertyAssocMany<?>) {
+            DeployBeanPropertyAssocMany<?> many = (DeployBeanPropertyAssocMany<?>)details;
+            DeployBeanDescriptor<?> targetDesc = many.getTargetDeploy();
+          }
+        }
       }
     }
   }

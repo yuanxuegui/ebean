@@ -17,7 +17,7 @@ import java.lang.annotation.Target;
  * Long totalCount;
  *
  * @Aggregation("sum(details.quantity*details.unitPrice)")
- * Long totalCount;
+ * Long totalAmount;
  *
  * }</pre>
  */
