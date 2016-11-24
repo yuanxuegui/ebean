@@ -115,6 +115,16 @@ public class ServerConfig {
    */
   private boolean disableClasspathSearch;
 
+  private TenantMode tenantMode = TenantMode.NONE;
+
+  private String tenantPartitionColumn = "tenant_id";
+
+  private CurrentTenantProvider currentTenantProvider;
+
+  private TenantDataSourceProvider tenantDataSourceProvider;
+
+  private TenantSchemaProvider tenantSchemaProvider;
+
   /**
    * List of interesting classes such as entities, embedded, ScalarTypes,
    * Listeners, Finders, Controllers etc.
@@ -610,6 +620,76 @@ public class ServerConfig {
    */
   public void setCurrentUserProvider(CurrentUserProvider currentUserProvider) {
     this.currentUserProvider = currentUserProvider;
+  }
+
+  /**
+   * Return the tenancy mode used.
+   */
+  public TenantMode getTenantMode() {
+    return tenantMode;
+  }
+
+  /**
+   * Set the tenancy mode to use.
+   */
+  public void setTenantMode(TenantMode tenantMode) {
+    this.tenantMode = tenantMode;
+  }
+
+  /**
+   * Return the column name used for TenantMode.PARTITION.
+   */
+  public String getTenantPartitionColumn() {
+    return tenantPartitionColumn;
+  }
+
+  /**
+   * Set the column name used for TenantMode.PARTITION.
+   */
+  public void setTenantPartitionColumn(String tenantPartitionColumn) {
+    this.tenantPartitionColumn = tenantPartitionColumn;
+  }
+
+  /**
+   * Return the current tenant provider.
+   */
+  public CurrentTenantProvider getCurrentTenantProvider() {
+    return currentTenantProvider;
+  }
+
+  /**
+   * Set the current tenant provider.
+   */
+  public void setCurrentTenantProvider(CurrentTenantProvider currentTenantProvider) {
+    this.currentTenantProvider = currentTenantProvider;
+  }
+
+  /**
+   * Return the tenancy datasource provider.
+   */
+  public TenantDataSourceProvider getTenantDataSourceProvider() {
+    return tenantDataSourceProvider;
+  }
+
+  /**
+   * Set the tenancy datasource provider.
+   */
+  public void setTenantDataSourceProvider(TenantDataSourceProvider tenantDataSourceProvider) {
+    this.tenantDataSourceProvider = tenantDataSourceProvider;
+  }
+
+  /**
+   * Return the tenancy schema provider.
+   */
+  public TenantSchemaProvider getTenantSchemaProvider() {
+    return tenantSchemaProvider;
+  }
+
+  /**
+   * Set the tenancy schema provider.
+   */
+  public void setTenantSchemaProvider(TenantSchemaProvider tenantSchemaProvider) {
+    this.tenantSchemaProvider = tenantSchemaProvider;
   }
 
   /**
