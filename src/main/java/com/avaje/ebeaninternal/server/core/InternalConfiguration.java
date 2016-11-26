@@ -42,12 +42,14 @@ import com.avaje.ebeaninternal.server.readaudit.DefaultReadAuditLogger;
 import com.avaje.ebeaninternal.server.readaudit.DefaultReadAuditPrepare;
 import com.avaje.ebeaninternal.server.text.json.DJsonContext;
 import com.avaje.ebeaninternal.server.transaction.AutoCommitTransactionManager;
+import com.avaje.ebeaninternal.server.transaction.DataSourceSupplier;
 import com.avaje.ebeaninternal.server.transaction.DefaultTransactionScopeManager;
 import com.avaje.ebeaninternal.server.transaction.DocStoreTransactionManager;
 import com.avaje.ebeaninternal.server.transaction.ExplicitTransactionManager;
 import com.avaje.ebeaninternal.server.transaction.ExternalTransactionScopeManager;
 import com.avaje.ebeaninternal.server.transaction.JtaTransactionManager;
 import com.avaje.ebeaninternal.server.transaction.TransactionManager;
+import com.avaje.ebeaninternal.server.transaction.TransactionManagerOptions;
 import com.avaje.ebeaninternal.server.transaction.TransactionScopeManager;
 import com.avaje.ebeaninternal.server.type.DefaultTypeManager;
 import com.avaje.ebeaninternal.server.type.TypeManager;
@@ -340,16 +342,35 @@ public class InternalConfiguration {
   public TransactionManager createTransactionManager(DocStoreUpdateProcessor indexUpdateProcessor) {
 
     boolean localL2 = cacheManager.isLocalL2Caching();
+
+    TransactionManagerOptions options =
+      new TransactionManagerOptions(localL2, serverConfig, clusterManager, backgroundExecutor,
+                                    indexUpdateProcessor, beanDescriptorManager, dataSource());
+
     if (serverConfig.isExplicitTransactionBeginMode()) {
-      return new ExplicitTransactionManager(localL2, serverConfig, clusterManager, backgroundExecutor, indexUpdateProcessor, beanDescriptorManager);
+      return new ExplicitTransactionManager(options);
     }
     if (isAutoCommitMode()) {
-      return new AutoCommitTransactionManager(localL2, serverConfig, clusterManager, backgroundExecutor, indexUpdateProcessor, beanDescriptorManager);
+      return new AutoCommitTransactionManager(options);
     }
     if (serverConfig.isDocStoreOnly()) {
-      return new DocStoreTransactionManager(localL2, serverConfig, clusterManager, backgroundExecutor, indexUpdateProcessor, beanDescriptorManager);
+      return new DocStoreTransactionManager(options);
     }
-    return new TransactionManager(localL2, serverConfig, clusterManager, backgroundExecutor, indexUpdateProcessor, beanDescriptorManager);
+    return new TransactionManager(options);
+  }
+
+  /**
+   * Return the DataSource supplier based on the tenancy mode.
+   */
+  private DataSourceSupplier dataSource() {
+    switch (serverConfig.getTenantMode()) {
+      case DB:
+        return new MultiTenantDbSupplier(serverConfig.getCurrentTenantProvider(), serverConfig.getTenantDataSourceProvider());
+      case SCHEMA:
+        return new MultiTenantDbSchemaSupplier(serverConfig.getCurrentTenantProvider(), serverConfig.getDataSource(), serverConfig.getTenantSchemaProvider());
+      default:
+        return new SimpleDataSourceProvider(serverConfig.getDataSource());
+    }
   }
 
   /**

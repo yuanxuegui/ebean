@@ -9,6 +9,7 @@ import com.avaje.ebean.common.SpiContainer;
 import com.avaje.ebean.config.ContainerConfig;
 import com.avaje.ebean.config.PropertyMap;
 import com.avaje.ebean.config.ServerConfig;
+import com.avaje.ebean.config.TenantMode;
 import com.avaje.ebean.config.UnderscoreNamingConvention;
 import com.avaje.ebean.config.dbplatform.DatabasePlatform;
 import com.avaje.ebean.config.dbplatform.H2Platform;
@@ -99,9 +100,11 @@ public class DefaultContainer implements SpiContainer {
       if (serverConfig.isDocStoreOnly()) {
         serverConfig.setDatabasePlatform(new H2Platform());
       } else {
-        setDataSource(serverConfig);
-        // check the autoCommit and Transaction Isolation
-        online = checkDataSource(serverConfig);
+        if (!TenantMode.DB.equals(serverConfig.getTenantMode())) {
+          setDataSource(serverConfig);
+          // check the autoCommit and Transaction Isolation
+          online = checkDataSource(serverConfig);
+        }
       }
 
       // determine database platform (Oracle etc)

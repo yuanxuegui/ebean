@@ -2,7 +2,6 @@ package com.avaje.ebeaninternal.server.transaction;
 
 import com.avaje.ebean.BackgroundExecutor;
 import com.avaje.ebean.config.PersistBatch;
-import com.avaje.ebean.config.ServerConfig;
 import com.avaje.ebean.config.dbplatform.DatabasePlatform.OnQueryOnly;
 import com.avaje.ebean.event.changelog.ChangeLogListener;
 import com.avaje.ebean.event.changelog.ChangeLogPrepare;
@@ -16,7 +15,6 @@ import com.avaje.ebeaninternal.server.deploy.BeanDescriptorManager;
 import com.avaje.ebeanservice.docstore.api.DocStoreTransaction;
 import com.avaje.ebeanservice.docstore.api.DocStoreUpdateProcessor;
 import com.avaje.ebeanservice.docstore.api.DocStoreUpdates;
-import org.avaje.datasource.DataSourcePool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,7 +56,7 @@ public class TransactionManager {
   /**
    * The dataSource of connections.
    */
-  protected final DataSource dataSource;
+  protected final DataSourceSupplier dataSourceSupplier;
 
   /**
    * Flag to indicate the default Isolation is READ COMMITTED. This enables us
@@ -110,34 +108,33 @@ public class TransactionManager {
   /**
    * Create the TransactionManager
    */
-  public TransactionManager(boolean localL2Caching, ServerConfig config, ClusterManager clusterManager, BackgroundExecutor backgroundExecutor,
-                            DocStoreUpdateProcessor docStoreUpdateProcessor, BeanDescriptorManager descMgr) {
+  public TransactionManager(TransactionManagerOptions options) {
 
-    this.skipCacheAfterWrite = config.isSkipCacheAfterWrite();
-    this.localL2Caching = localL2Caching;
-    this.persistBatch = config.getPersistBatch();
-    this.persistBatchOnCascade = config.appliedPersistBatchOnCascade();
-    this.beanDescriptorManager = descMgr;
-    this.viewInvalidation = descMgr.requiresViewEntityCacheInvalidation();
-    this.changeLogPrepare = descMgr.getChangeLogPrepare();
-    this.changeLogListener = descMgr.getChangeLogListener();
-    this.clusterManager = clusterManager;
-    this.serverName = config.getName();
-    this.backgroundExecutor = backgroundExecutor;
-    this.dataSource = config.getDataSource();
-    this.docStoreActive = config.getDocStoreConfig().isActive();
-    this.docStoreUpdateProcessor = docStoreUpdateProcessor;
-    this.bulkEventListenerMap = new BulkEventListenerMap(config.getBulkTableEventListeners());
+    this.skipCacheAfterWrite = options.config.isSkipCacheAfterWrite();
+    this.localL2Caching = options.localL2Caching;
+    this.persistBatch = options.config.getPersistBatch();
+    this.persistBatchOnCascade = options.config.appliedPersistBatchOnCascade();
+    this.beanDescriptorManager = options.descMgr;
+    this.viewInvalidation = options.descMgr.requiresViewEntityCacheInvalidation();
+    this.changeLogPrepare = options.descMgr.getChangeLogPrepare();
+    this.changeLogListener = options.descMgr.getChangeLogListener();
+    this.clusterManager = options.clusterManager;
+    this.serverName = options.config.getName();
+    this.backgroundExecutor = options.backgroundExecutor;
+    this.dataSourceSupplier = options.dataSourceSupplier;
+    this.docStoreActive = options.config.getDocStoreConfig().isActive();
+    this.docStoreUpdateProcessor = options.docStoreUpdateProcessor;
+    this.bulkEventListenerMap = new BulkEventListenerMap(options.config.getBulkTableEventListeners());
 
     this.prefix = "";
     this.externalTransPrefix = "e";
 
-    this.onQueryOnly = initOnQueryOnly(config.getDatabasePlatform().getOnQueryOnly(), dataSource);
+    this.onQueryOnly = initOnQueryOnly(options.config.getDatabasePlatform().getOnQueryOnly());
   }
 
   public void shutdown(boolean shutdownDataSource, boolean deregisterDriver) {
-    if (shutdownDataSource && (dataSource instanceof DataSourcePool)) {
-      ((DataSourcePool) dataSource).shutdown(deregisterDriver);
+    if (shutdownDataSource) {
+      dataSourceSupplier.shutdown(deregisterDriver);
     }
   }
 
@@ -181,7 +178,7 @@ public class TransactionManager {
    * just for queries do need to be committed or rollback after the query.
    * </p>
    */
-  protected OnQueryOnly initOnQueryOnly(OnQueryOnly dbPlatformOnQueryOnly, DataSource ds) {
+  protected OnQueryOnly initOnQueryOnly(OnQueryOnly dbPlatformOnQueryOnly) {
 
     // first check for a system property 'override'
     String systemPropertyValue = System.getProperty("ebean.transaction.onqueryonly");
@@ -198,7 +195,7 @@ public class TransactionManager {
   }
 
   public DataSource getDataSource() {
-    return dataSource;
+    return dataSourceSupplier.getDataSource();
   }
 
   /**
@@ -235,7 +232,7 @@ public class TransactionManager {
   public SpiTransaction createTransaction(boolean explicit, int isolationLevel) {
     Connection c = null;
     try {
-      c = dataSource.getConnection();
+      c = getDataSource().getConnection();
       long id = transactionCounter.incrementAndGet();
 
       SpiTransaction t = createTransaction(explicit, c, id);
@@ -265,7 +262,7 @@ public class TransactionManager {
   public SpiTransaction createQueryTransaction() {
     Connection c = null;
     try {
-      c = dataSource.getConnection();
+      c = getDataSource().getConnection();
       long id = transactionCounter.incrementAndGet();
 
       return createTransaction(false, c, id);

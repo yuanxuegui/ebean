@@ -12,6 +12,7 @@ import com.avaje.ebean.cache.ServerCacheManager;
 import com.avaje.ebean.config.DbMigrationConfig;
 import com.avaje.ebean.config.EncryptKeyManager;
 import com.avaje.ebean.config.ServerConfig;
+import com.avaje.ebean.config.TenantMode;
 import com.avaje.ebean.config.dbplatform.DatabasePlatform;
 import com.avaje.ebean.dbmigration.DdlGenerator;
 import com.avaje.ebean.event.BeanPersistController;
@@ -346,16 +347,10 @@ public final class DefaultServer implements SpiServer, SpiEbeanServer {
    * Start any services after registering with the ClusterManager.
    */
   public void start() {
-    DbMigrationConfig migrationConfig = serverConfig.getMigrationConfig();
-    if (migrationConfig != null) {
+    if (!TenantMode.DB.equals(serverConfig.getTenantMode())) {
+      DbMigrationConfig migrationConfig = serverConfig.getMigrationConfig();
       migrationConfig.generateOnStart(this);
-
-      if (migrationConfig.isRunMigration()) {
-        // classLoader used to load resources
-        ClassLoader classLoader = serverConfig.getClassLoadConfig().getClassLoader();
-        MigrationRunner runner = migrationConfig.createRunner(classLoader);
-        runner.run(serverConfig.getDataSource());
-      }
+      serverConfig.runDbMigration(serverConfig.getDataSource());
     }
   }
 
@@ -408,7 +403,7 @@ public final class DefaultServer implements SpiServer, SpiEbeanServer {
     for (Plugin plugin : serverPlugins) {
       try {
         plugin.shutdown();
-      } catch (Throwable e) {
+      } catch (Exception e) {
         logger.error("Error when shutting down plugin", e);
       }
     }
