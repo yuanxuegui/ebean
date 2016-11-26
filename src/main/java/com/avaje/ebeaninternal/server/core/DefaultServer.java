@@ -9,6 +9,7 @@ import com.avaje.ebean.bean.ObjectGraphNode;
 import com.avaje.ebean.bean.PersistenceContext;
 import com.avaje.ebean.bean.PersistenceContext.WithOption;
 import com.avaje.ebean.cache.ServerCacheManager;
+import com.avaje.ebean.config.CurrentTenantProvider;
 import com.avaje.ebean.config.DbMigrationConfig;
 import com.avaje.ebean.config.EncryptKeyManager;
 import com.avaje.ebean.config.ServerConfig;
@@ -156,6 +157,8 @@ public final class DefaultServer implements SpiServer, SpiEbeanServer {
 
   private final MetaInfoManager metaInfoManager;
 
+  private final CurrentTenantProvider currentTenantProvider;
+
   /**
    * The default PersistenceContextScope used if it is not explicitly set on a query.
    */
@@ -206,6 +209,7 @@ public final class DefaultServer implements SpiServer, SpiEbeanServer {
     this.expressionFactory = config.getExpressionFactory();
     this.encryptKeyManager = serverConfig.getEncryptKeyManager();
     this.defaultPersistenceContextScope = serverConfig.getPersistenceContextScope();
+    this.currentTenantProvider = serverConfig.getCurrentTenantProvider();
 
     this.beanDescriptorManager = config.getBeanDescriptorManager();
     beanDescriptorManager.setEbeanServer(this);
@@ -281,6 +285,11 @@ public final class DefaultServer implements SpiServer, SpiEbeanServer {
 
   public int getQueryBatchSize() {
     return queryBatchSize;
+  }
+
+  @Override
+  public Object currentTenantId() {
+    return currentTenantProvider.currentId();
   }
 
   public ServerConfig getServerConfig() {

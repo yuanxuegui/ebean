@@ -1,6 +1,7 @@
 package com.avaje.ebeaninternal.server.transaction;
 
 import com.avaje.ebean.BackgroundExecutor;
+import com.avaje.ebean.config.CurrentTenantProvider;
 import com.avaje.ebean.config.PersistBatch;
 import com.avaje.ebean.config.dbplatform.DatabasePlatform.OnQueryOnly;
 import com.avaje.ebean.event.changelog.ChangeLogListener;
@@ -105,6 +106,8 @@ public class TransactionManager {
 
   private final boolean skipCacheAfterWrite;
 
+  private final CurrentTenantProvider currentTenantProvider;
+
   /**
    * Create the TransactionManager
    */
@@ -125,7 +128,7 @@ public class TransactionManager {
     this.docStoreActive = options.config.getDocStoreConfig().isActive();
     this.docStoreUpdateProcessor = options.docStoreUpdateProcessor;
     this.bulkEventListenerMap = new BulkEventListenerMap(options.config.getBulkTableEventListeners());
-
+    this.currentTenantProvider = options.config.getCurrentTenantProvider();
     this.prefix = "";
     this.externalTransPrefix = "e";
 
@@ -235,7 +238,7 @@ public class TransactionManager {
       c = getDataSource().getConnection();
       long id = transactionCounter.incrementAndGet();
 
-      SpiTransaction t = createTransaction(explicit, c, id);
+      SpiTransaction t = init(createTransaction(explicit, c, id));
       if (isolationLevel > -1) {
         c.setTransactionIsolation(isolationLevel);
       }
@@ -259,13 +262,19 @@ public class TransactionManager {
     }
   }
 
+  private SpiTransaction init(SpiTransaction transaction) {
+    if (currentTenantProvider != null) {
+      transaction.setTenantId(currentTenantProvider.currentId());
+    }
+    return transaction;
+  }
+
   public SpiTransaction createQueryTransaction() {
     Connection c = null;
     try {
       c = getDataSource().getConnection();
       long id = transactionCounter.incrementAndGet();
-
-      return createTransaction(false, c, id);
+      return init(createTransaction(false, c, id));
 
     } catch (PersistenceException ex) {
       // close the connection and re-throw the exception

@@ -215,6 +215,8 @@ public class BeanDescriptor<T> implements MetaBeanInfo, BeanType<T> {
 
   private final BeanProperty unmappedJson;
 
+  private final BeanProperty tenant;
+
   private final BeanProperty draft;
 
   private final BeanProperty draftDirty;
@@ -465,6 +467,7 @@ public class BeanDescriptor<T> implements MetaBeanInfo, BeanType<T> {
     this.idProperty = listHelper.getId();
     this.versionProperty = listHelper.getVersionProperty();
     this.unmappedJson = listHelper.getUnmappedJson();
+    this.tenant = listHelper.getTenant();
     this.draft = listHelper.getDraft();
     this.draftDirty = listHelper.getDraftDirty();
     this.propMap = listHelper.getPropertyMap();
@@ -1074,6 +1077,21 @@ public class BeanDescriptor<T> implements MetaBeanInfo, BeanType<T> {
    */
   public BeanProperty getDraftDirty() {
     return draftDirty;
+  }
+
+  /**
+   * Prepare the query for multi-tenancy check for document store only use.
+   */
+  public void prepareQuery(SpiQuery<T> query) {
+    if (tenant != null) {
+      Object tenantId = ebeanServer.currentTenantId();
+      if (tenantId != null) {
+        query.where().eq(tenant.getName(), tenantId);
+      }
+    }
+    if (isDocStoreOnly()) {
+      query.setUseDocStore(true);
+    }
   }
 
   /**
@@ -2473,6 +2491,15 @@ public class BeanDescriptor<T> implements MetaBeanInfo, BeanType<T> {
   public void setUnmappedJson(EntityBean bean, Map<String, Object> unmappedProperties) {
     if( unmappedJson != null) {
       unmappedJson.setValueIntercept(bean, unmappedProperties);
+    }
+  }
+
+  /**
+   * Set the Tenant Id value to the bean.
+   */
+  public void setTenantId(EntityBean entityBean, Object tenantId) {
+    if (tenantId != null) {
+      tenant.setValue(entityBean, tenantId);
     }
   }
 
