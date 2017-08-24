@@ -19,6 +19,7 @@ import io.ebean.search.MultiMatch;
 import io.ebean.search.TextCommonTerms;
 import io.ebean.search.TextQueryString;
 import io.ebean.search.TextSimple;
+import io.ebean.util.StringHelper;
 import io.ebeaninternal.api.HashQueryPlanBuilder;
 import io.ebeaninternal.api.ManyWhereJoins;
 import io.ebeaninternal.api.SpiExpression;
@@ -698,15 +699,39 @@ public class DefaultExpressionList<T> implements SpiExpressionList<T> {
   }
 
   @Override
+  public ExpressionList<T> eqIfNotEmpty(String propertyName, Object value) {
+    if (isEmpty(value)) {
+      return this;
+    }
+    return eq(propertyName, value);
+  }
+
+  @Override
   public ExpressionList<T> ieq(String propertyName, String value) {
     add(expr.ieq(propertyName, value));
     return this;
   }
 
   @Override
+  public ExpressionList<T> ieqIfNotEmpty(String propertyName, String value) {
+    if (StringHelper.isNull(value)) {
+      return this;
+    }
+    return ieq(propertyName, value);
+  }
+
+  @Override
   public ExpressionList<T> ne(String propertyName, Object value) {
     add(expr.ne(propertyName, value));
     return this;
+  }
+
+  @Override
+  public ExpressionList<T> neIfNotEmpty(String propertyName, Object value) {
+    if (isEmpty(value)) {
+      return this;
+    }
+    return ne(propertyName, value);
   }
 
   @Override
@@ -728,9 +753,25 @@ public class DefaultExpressionList<T> implements SpiExpressionList<T> {
   }
 
   @Override
+  public ExpressionList<T> betweenIfNotEmpty(String propertyName, Object value1, Object value2) {
+    if (isEmpty(value1) && isEmpty(value2)) {
+      return this;
+    }
+    return between(propertyName, value1, value2);
+  }
+
+  @Override
   public ExpressionList<T> betweenProperties(String lowProperty, String highProperty, Object value) {
     add(expr.betweenProperties(lowProperty, highProperty, value));
     return this;
+  }
+
+  @Override
+  public ExpressionList<T> betweenPropertiesWhenNotEmpty(String lowProperty, String highProperty, Object value) {
+    if (isEmpty(value)) {
+      return this;
+    }
+    return betweenProperties(lowProperty, highProperty, value);
   }
 
   @Override
@@ -740,9 +781,25 @@ public class DefaultExpressionList<T> implements SpiExpressionList<T> {
   }
 
   @Override
+  public ExpressionList<T> containsIfNotEmpty(String propertyName, String value) {
+    if (StringHelper.isNull(value)) {
+      return this;
+    }
+    return contains(propertyName, value);
+  }
+
+  @Override
   public ExpressionList<T> endsWith(String propertyName, String value) {
     add(expr.endsWith(propertyName, value));
     return this;
+  }
+
+  @Override
+  public ExpressionList<T> endsWithIfNotEmpty(String propertyName, String value) {
+    if (StringHelper.isNull(value)) {
+      return this;
+    }
+    return endsWith(propertyName, value);
   }
 
   @Override
@@ -752,9 +809,25 @@ public class DefaultExpressionList<T> implements SpiExpressionList<T> {
   }
 
   @Override
+  public ExpressionList<T> geIfNotEmpty(String propertyName, Object value) {
+    if (isEmpty(value)) {
+      return this;
+    }
+    return ge(propertyName, value);
+  }
+
+  @Override
   public ExpressionList<T> gt(String propertyName, Object value) {
     add(expr.gt(propertyName, value));
     return this;
+  }
+
+  @Override
+  public ExpressionList<T> gtIfNotEmpty(String propertyName, Object value) {
+    if (isEmpty(value)) {
+      return this;
+    }
+    return gt(propertyName, value);
   }
 
   @Override
@@ -764,15 +837,36 @@ public class DefaultExpressionList<T> implements SpiExpressionList<T> {
   }
 
   @Override
+  public ExpressionList<T> icontainsIfNotEmpty(String propertyName, String value) {
+    if (StringHelper.isNull(value)) {
+      return this;
+    }
+    return icontains(propertyName, value);
+  }
+
+  @Override
   public ExpressionList<T> idIn(Object... idValues) {
     add(expr.idIn(idValues));
     return this;
   }
 
   @Override
+  public ExpressionList<T> idInIfNotEmpty(Object... idValues) {
+    if (isEmpty(idValues)) {
+      return this;
+    }
+    return idIn(idValues);
+  }
+
+  @Override
   public ExpressionList<T> idIn(Collection<?> idCollection) {
     add(expr.idIn(idCollection));
     return this;
+  }
+
+  @Override
+  public ExpressionList<T> idInIfNotEmpty(Collection<?> idValues) {
+    return idIn(idValues);
   }
 
   @Override
@@ -786,15 +880,39 @@ public class DefaultExpressionList<T> implements SpiExpressionList<T> {
   }
 
   @Override
+  public ExpressionList<T> idEqIfNotEmpty(Object value) {
+    if (isEmpty(value)) {
+      return this;
+    }
+    return idEq(value);
+  }
+
+  @Override
   public ExpressionList<T> iendsWith(String propertyName, String value) {
     add(expr.iendsWith(propertyName, value));
     return this;
   }
 
   @Override
+  public ExpressionList<T> iendsWithIfNotEmpty(String propertyName, String value) {
+    if (StringHelper.isNull(value)) {
+      return this;
+    }
+    return iendsWith(propertyName, value);
+  }
+
+  @Override
   public ExpressionList<T> ilike(String propertyName, String value) {
     add(expr.ilike(propertyName, value));
     return this;
+  }
+
+  @Override
+  public ExpressionList<T> ilikeIfNotEmpty(String propertyName, String value) {
+    if (StringHelper.isNull(value)) {
+      return this;
+    }
+    return ilike(propertyName, value);
   }
 
   @Override
@@ -810,9 +928,25 @@ public class DefaultExpressionList<T> implements SpiExpressionList<T> {
   }
 
   @Override
+  public ExpressionList<T> inIfNotEmpty(String propertyName, Collection<?> values) {
+    if (isEmpty(values)) {
+      return this;
+    }
+    return in(propertyName, values);
+  }
+
+  @Override
   public ExpressionList<T> in(String propertyName, Object... values) {
     add(expr.in(propertyName, values));
     return this;
+  }
+
+  @Override
+  public ExpressionList<T> inIfNotEmpty(String propertyName, Object... values) {
+    if (isEmpty(values)) {
+      return this;
+    }
+    return in(propertyName, values);
   }
 
   @Override
@@ -822,9 +956,25 @@ public class DefaultExpressionList<T> implements SpiExpressionList<T> {
   }
 
   @Override
+  public ExpressionList<T> notInIfNotEmpty(String propertyName, Object... values) {
+    if (isEmpty(values)) {
+      return this;
+    }
+    return notIn(propertyName, values);
+  }
+
+  @Override
   public ExpressionList<T> notIn(String propertyName, Collection<?> values) {
     add(expr.notIn(propertyName, values));
     return this;
+  }
+
+  @Override
+  public ExpressionList<T> notInIfNotEmpty(String propertyName, Collection<?> values) {
+    if (isEmpty(values)) {
+      return this;
+    }
+    return notIn(propertyName, values);
   }
 
   @Override
@@ -876,9 +1026,25 @@ public class DefaultExpressionList<T> implements SpiExpressionList<T> {
   }
 
   @Override
+  public ExpressionList<T> istartsWithIfNotEmpty(String propertyName, String value) {
+    if (StringHelper.isNull(value)) {
+      return this;
+    }
+    return istartsWith(propertyName, value);
+  }
+
+  @Override
   public ExpressionList<T> le(String propertyName, Object value) {
     add(expr.le(propertyName, value));
     return this;
+  }
+
+  @Override
+  public ExpressionList<T> leIfNotEmpty(String propertyName, Object value) {
+    if (isEmpty(value)) {
+      return this;
+    }
+    return le(propertyName, value);
   }
 
   @Override
@@ -888,9 +1054,25 @@ public class DefaultExpressionList<T> implements SpiExpressionList<T> {
   }
 
   @Override
+  public ExpressionList<T> exampleLikeIfNotEmpty(Object example) {
+    if (isEmpty(example)) {
+      return this;
+    }
+    return exampleLike(example);
+  }
+
+  @Override
   public ExpressionList<T> iexampleLike(Object example) {
     add(expr.iexampleLike(example));
     return this;
+  }
+
+  @Override
+  public ExpressionList<T> iexampleLikeIfNotEmpty(Object example) {
+    if (isEmpty(example)) {
+      return this;
+    }
+    return iexampleLike(example);
   }
 
   @Override
@@ -900,9 +1082,25 @@ public class DefaultExpressionList<T> implements SpiExpressionList<T> {
   }
 
   @Override
+  public ExpressionList<T> likeIfNotEmpty(String propertyName, String value) {
+    if (StringHelper.isNull(value)) {
+      return this;
+    }
+    return like(propertyName, value);
+  }
+
+  @Override
   public ExpressionList<T> lt(String propertyName, Object value) {
     add(expr.lt(propertyName, value));
     return this;
+  }
+
+  @Override
+  public ExpressionList<T> ltIfNotEmpty(String propertyName, Object value) {
+    if (isEmpty(value)) {
+      return this;
+    }
+    return lt(propertyName, value);
   }
 
   @Override
@@ -963,6 +1161,14 @@ public class DefaultExpressionList<T> implements SpiExpressionList<T> {
   public ExpressionList<T> startsWith(String propertyName, String value) {
     add(expr.startsWith(propertyName, value));
     return this;
+  }
+
+  @Override
+  public ExpressionList<T> startsWithIfNotEmpty(String propertyName, String value) {
+    if (StringHelper.isNull(value)) {
+      return this;
+    }
+    return startsWith(propertyName, value);
   }
 
   @Override
@@ -1114,5 +1320,20 @@ public class DefaultExpressionList<T> implements SpiExpressionList<T> {
       return list.get(0).getIdEqualTo(idName);
     }
     return null;
+  }
+
+  protected boolean isEmpty(Object value) {
+    if (value == null ||
+      (value instanceof String && StringHelper.isNull((String) value))) {
+      return true;
+    }
+    return false;
+  }
+
+  protected boolean isEmpty(Object ...values) {
+    if (values == null || values.length > 0) {
+      return true;
+    }
+    return false;
   }
 }

@@ -281,8 +281,18 @@ class JunctionExpression<T> implements SpiJunction<T>, SpiExpression, Expression
   }
 
   @Override
+  public ExpressionList<T> betweenIfNotEmpty(String propertyName, Object value1, Object value2) {
+    return exprList.betweenIfNotEmpty(propertyName, value1, value2);
+  }
+
+  @Override
   public ExpressionList<T> betweenProperties(String lowProperty, String highProperty, Object value) {
     return exprList.betweenProperties(lowProperty, highProperty, value);
+  }
+
+  @Override
+  public ExpressionList<T> betweenPropertiesWhenNotEmpty(String lowProperty, String highProperty, Object value) {
+    return exprList.betweenPropertiesWhenNotEmpty(lowProperty, highProperty, value);
   }
 
   @Override
@@ -291,8 +301,18 @@ class JunctionExpression<T> implements SpiJunction<T>, SpiExpression, Expression
   }
 
   @Override
+  public ExpressionList<T> containsIfNotEmpty(String propertyName, String value) {
+    return exprList.containsIfNotEmpty(propertyName, value);
+  }
+
+  @Override
   public ExpressionList<T> endsWith(String propertyName, String value) {
     return exprList.endsWith(propertyName, value);
+  }
+
+  @Override
+  public ExpressionList<T> endsWithIfNotEmpty(String propertyName, String value) {
+    return exprList.endsWithIfNotEmpty(propertyName, value);
   }
 
   @Override
@@ -301,8 +321,18 @@ class JunctionExpression<T> implements SpiJunction<T>, SpiExpression, Expression
   }
 
   @Override
+  public ExpressionList<T> eqIfNotEmpty(String propertyName, Object value) {
+    return exprList.eqIfNotEmpty(propertyName, value);
+  }
+
+  @Override
   public ExpressionList<T> exampleLike(Object example) {
     return exprList.exampleLike(example);
+  }
+
+  @Override
+  public ExpressionList<T> exampleLikeIfNotEmpty(Object example) {
+    return exprList.exampleLikeIfNotEmpty(example);
   }
 
   @Override
@@ -543,8 +573,18 @@ class JunctionExpression<T> implements SpiJunction<T>, SpiExpression, Expression
   }
 
   @Override
+  public ExpressionList<T> geIfNotEmpty(String propertyName, Object value) {
+    return exprList.geIfNotEmpty(propertyName, value);
+  }
+
+  @Override
   public ExpressionList<T> gt(String propertyName, Object value) {
     return exprList.gt(propertyName, value);
+  }
+
+  @Override
+  public ExpressionList<T> gtIfNotEmpty(String propertyName, Object value) {
+    return exprList.gtIfNotEmpty(propertyName, value);
   }
 
   @Override
@@ -558,8 +598,18 @@ class JunctionExpression<T> implements SpiJunction<T>, SpiExpression, Expression
   }
 
   @Override
+  public ExpressionList<T> icontainsIfNotEmpty(String propertyName, String value) {
+    return exprList.icontainsIfNotEmpty(propertyName, value);
+  }
+
+  @Override
   public ExpressionList<T> idEq(Object value) {
     return exprList.idEq(value);
+  }
+
+  @Override
+  public ExpressionList<T> idEqIfNotEmpty(Object value) {
+    return exprList.idEqIfNotEmpty(value);
   }
 
   @Override
@@ -568,8 +618,18 @@ class JunctionExpression<T> implements SpiJunction<T>, SpiExpression, Expression
   }
 
   @Override
+  public ExpressionList<T> idInIfNotEmpty(Object... idValues) {
+    return exprList.idInIfNotEmpty(idValues);
+  }
+
+  @Override
   public ExpressionList<T> idIn(Collection<?> idValues) {
     return exprList.idIn(idValues);
+  }
+
+  @Override
+  public ExpressionList<T> idInIfNotEmpty(Collection<?> idValues) {
+    return exprList.idInIfNotEmpty(idValues);
   }
 
   @Override
@@ -578,8 +638,18 @@ class JunctionExpression<T> implements SpiJunction<T>, SpiExpression, Expression
   }
 
   @Override
+  public ExpressionList<T> iendsWithIfNotEmpty(String propertyName, String value) {
+    return exprList.iendsWithIfNotEmpty(propertyName, value);
+  }
+
+  @Override
   public ExpressionList<T> ieq(String propertyName, String value) {
     return exprList.ieq(propertyName, value);
+  }
+
+  @Override
+  public ExpressionList<T> ieqIfNotEmpty(String propertyName, String value) {
+    return exprList.ieqIfNotEmpty(propertyName, value);
   }
 
   @Override
@@ -588,8 +658,18 @@ class JunctionExpression<T> implements SpiJunction<T>, SpiExpression, Expression
   }
 
   @Override
+  public ExpressionList<T> iexampleLikeIfNotEmpty(Object example) {
+    return exprList.iexampleLikeIfNotEmpty(example);
+  }
+
+  @Override
   public ExpressionList<T> ilike(String propertyName, String value) {
     return exprList.ilike(propertyName, value);
+  }
+
+  @Override
+  public ExpressionList<T> ilikeIfNotEmpty(String propertyName, String value) {
+    return exprList.ilikeIfNotEmpty(propertyName, value);
   }
 
   @Override
@@ -598,8 +678,18 @@ class JunctionExpression<T> implements SpiJunction<T>, SpiExpression, Expression
   }
 
   @Override
+  public ExpressionList<T> inIfNotEmpty(String propertyName, Collection<?> values) {
+    return exprList.inIfNotEmpty(propertyName, values);
+  }
+
+  @Override
   public ExpressionList<T> in(String propertyName, Object... values) {
     return exprList.in(propertyName, values);
+  }
+
+  @Override
+  public ExpressionList<T> inIfNotEmpty(String propertyName, Object... values) {
+    return exprList.inIfNotEmpty(propertyName, values);
   }
 
   @Override
@@ -613,8 +703,18 @@ class JunctionExpression<T> implements SpiJunction<T>, SpiExpression, Expression
   }
 
   @Override
+  public ExpressionList<T> notInIfNotEmpty(String propertyName, Collection<?> values) {
+    return exprList.notInIfNotEmpty(propertyName, values);
+  }
+
+  @Override
   public ExpressionList<T> notIn(String propertyName, Object... values) {
     return exprList.notIn(propertyName, values);
+  }
+
+  @Override
+  public ExpressionList<T> notInIfNotEmpty(String propertyName, Object... values) {
+    return exprList.notInIfNotEmpty(propertyName, values);
   }
 
   @Override
@@ -658,8 +758,18 @@ class JunctionExpression<T> implements SpiJunction<T>, SpiExpression, Expression
   }
 
   @Override
+  public ExpressionList<T> istartsWithIfNotEmpty(String propertyName, String value) {
+    return exprList.istartsWithIfNotEmpty(propertyName, value);
+  }
+
+  @Override
   public ExpressionList<T> le(String propertyName, Object value) {
     return exprList.le(propertyName, value);
+  }
+
+  @Override
+  public ExpressionList<T> leIfNotEmpty(String propertyName, Object value) {
+    return exprList.leIfNotEmpty(propertyName, value);
   }
 
   @Override
@@ -668,13 +778,28 @@ class JunctionExpression<T> implements SpiJunction<T>, SpiExpression, Expression
   }
 
   @Override
+  public ExpressionList<T> likeIfNotEmpty(String propertyName, String value) {
+    return exprList.likeIfNotEmpty(propertyName, value);
+  }
+
+  @Override
   public ExpressionList<T> lt(String propertyName, Object value) {
     return exprList.lt(propertyName, value);
   }
 
   @Override
+  public ExpressionList<T> ltIfNotEmpty(String propertyName, Object value) {
+    return exprList.ltIfNotEmpty(propertyName, value);
+  }
+
+  @Override
   public ExpressionList<T> ne(String propertyName, Object value) {
     return exprList.ne(propertyName, value);
+  }
+
+  @Override
+  public ExpressionList<T> neIfNotEmpty(String propertyName, Object value) {
+    return exprList.neIfNotEmpty(propertyName, value);
   }
 
   @Override
@@ -790,6 +915,11 @@ class JunctionExpression<T> implements SpiJunction<T>, SpiExpression, Expression
   @Override
   public ExpressionList<T> startsWith(String propertyName, String value) {
     return exprList.startsWith(propertyName, value);
+  }
+
+  @Override
+  public ExpressionList<T> startsWithIfNotEmpty(String propertyName, String value) {
+    return null;
   }
 
   @Override

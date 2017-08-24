@@ -630,9 +630,19 @@ public interface ExpressionList<T> {
   ExpressionList<T> eq(String propertyName, Object value);
 
   /**
+   * Ignores null or empty value version of {@link #eq(String, Object)}.
+   */
+  ExpressionList<T> eqIfNotEmpty(String propertyName, Object value);
+
+  /**
    * Not Equal To - property not equal to the given value.
    */
   ExpressionList<T> ne(String propertyName, Object value);
+
+  /**
+   * Ignores null or empty value version of {@link #ne(String, Object)}.
+   */
+  ExpressionList<T> neIfNotEmpty(String propertyName, Object value);
 
   /**
    * Case Insensitive Equal To - property equal to the given value (typically
@@ -641,9 +651,19 @@ public interface ExpressionList<T> {
   ExpressionList<T> ieq(String propertyName, String value);
 
   /**
+   * Ignores null or empty value version of {@link #ieq(String, String)}.
+   */
+  ExpressionList<T> ieqIfNotEmpty(String propertyName, String value);
+
+  /**
    * Between - property between the two given values.
    */
   ExpressionList<T> between(String propertyName, Object value1, Object value2);
+
+  /**
+   * Ignores null or empty value version of {@link #between(String, Object, Object)}.
+   */
+  ExpressionList<T> betweenIfNotEmpty(String propertyName, Object value1, Object value2);
 
   /**
    * Between - value between the two properties.
@@ -651,9 +671,19 @@ public interface ExpressionList<T> {
   ExpressionList<T> betweenProperties(String lowProperty, String highProperty, Object value);
 
   /**
+   * Ignores null or empty value version of {@link #betweenProperties(String, String, Object)}.
+   */
+  ExpressionList<T> betweenPropertiesWhenNotEmpty(String lowProperty, String highProperty, Object value);
+
+  /**
    * Greater Than - property greater than the given value.
    */
   ExpressionList<T> gt(String propertyName, Object value);
+
+  /**
+   * Ignores null or empty value version of {@link #gt(String, Object)}.
+   */
+  ExpressionList<T> gtIfNotEmpty(String propertyName, Object value);
 
   /**
    * Greater Than or Equal to - property greater than or equal to the given
@@ -662,14 +692,29 @@ public interface ExpressionList<T> {
   ExpressionList<T> ge(String propertyName, Object value);
 
   /**
+   * Ignores null or empty value version of {@link #ge(String, Object)}.
+   */
+  ExpressionList<T> geIfNotEmpty(String propertyName, Object value);
+
+  /**
    * Less Than - property less than the given value.
    */
   ExpressionList<T> lt(String propertyName, Object value);
 
   /**
+   * Ignores null or empty value version of {@link #lt(String, Object)}.
+   */
+  ExpressionList<T> ltIfNotEmpty(String propertyName, Object value);
+
+  /**
    * Less Than or Equal to - property less than or equal to the given value.
    */
   ExpressionList<T> le(String propertyName, Object value);
+
+  /**
+   * Ignores null or empty value version of {@link #le(String, Object)}.
+   */
+  ExpressionList<T> leIfNotEmpty(String propertyName, Object value);
 
   /**
    * Is Null - property is null.
@@ -730,15 +775,30 @@ public interface ExpressionList<T> {
   ExpressionList<T> exampleLike(Object example);
 
   /**
+   * Ignores null or empty value version of {@link #exampleLike(Object)}.
+   */
+  ExpressionList<T> exampleLikeIfNotEmpty(Object example);
+
+  /**
    * Case insensitive version of {@link #exampleLike(Object)}
    */
   ExpressionList<T> iexampleLike(Object example);
+
+  /**
+   * Ignores null or empty value version of {@link #iexampleLike(Object)}.
+   */
+  ExpressionList<T> iexampleLikeIfNotEmpty(Object example);
 
   /**
    * Like - property like value where the value contains the SQL wild card
    * characters % (percentage) and _ (underscore).
    */
   ExpressionList<T> like(String propertyName, String value);
+
+  /**
+   * Ignores null or empty value version of {@link #like(String, String)}.
+   */
+  ExpressionList<T> likeIfNotEmpty(String propertyName, String value);
 
   /**
    * Case insensitive Like - property like value where the value contains the
@@ -748,9 +808,19 @@ public interface ExpressionList<T> {
   ExpressionList<T> ilike(String propertyName, String value);
 
   /**
+   * Ignores null or empty value version of {@link #ilike(String, String)}.
+   */
+  ExpressionList<T> ilikeIfNotEmpty(String propertyName, String value);
+
+  /**
    * Starts With - property like value%.
    */
   ExpressionList<T> startsWith(String propertyName, String value);
+
+  /**
+   * Ignores null or empty value version of {@link #startsWith(String, String)}.
+   */
+  ExpressionList<T> startsWithIfNotEmpty(String propertyName, String value);
 
   /**
    * Case insensitive Starts With - property like value%. Typically uses a
@@ -759,9 +829,19 @@ public interface ExpressionList<T> {
   ExpressionList<T> istartsWith(String propertyName, String value);
 
   /**
+   * Ignores null or empty value version of {@link #istartsWith(String, String)}.
+   */
+  ExpressionList<T> istartsWithIfNotEmpty(String propertyName, String value);
+
+  /**
    * Ends With - property like %value.
    */
   ExpressionList<T> endsWith(String propertyName, String value);
+
+  /**
+   * Ignores null or empty value version of {@link #endsWith(String, String)}.
+   */
+  ExpressionList<T> endsWithIfNotEmpty(String propertyName, String value);
 
   /**
    * Case insensitive Ends With - property like %value. Typically uses a lower()
@@ -770,15 +850,30 @@ public interface ExpressionList<T> {
   ExpressionList<T> iendsWith(String propertyName, String value);
 
   /**
+   * Ignores null or empty value version of {@link #iendsWith(String, String)}.
+   */
+  ExpressionList<T> iendsWithIfNotEmpty(String propertyName, String value);
+
+  /**
    * Contains - property like %value%.
    */
   ExpressionList<T> contains(String propertyName, String value);
+
+  /**
+   * Ignores null or empty value version of {@link #contains(String, String)}.
+   */
+  ExpressionList<T> containsIfNotEmpty(String propertyName, String value);
 
   /**
    * Case insensitive Contains - property like %value%. Typically uses a lower()
    * function to make the expression case insensitive.
    */
   ExpressionList<T> icontains(String propertyName, String value);
+
+  /**
+   * Ignores null or empty value version of {@link #icontains(String, String)}.
+   */
+  ExpressionList<T> icontainsIfNotEmpty(String propertyName, String value);
 
   /**
    * In - using a subQuery.
@@ -791,9 +886,19 @@ public interface ExpressionList<T> {
   ExpressionList<T> in(String propertyName, Object... values);
 
   /**
+   * Ignores null or empty value version of {@link #in(String, Object...)}.
+   */
+  ExpressionList<T> inIfNotEmpty(String propertyName, Object... values);
+
+  /**
    * In - property has a value in the collection of values.
    */
   ExpressionList<T> in(String propertyName, Collection<?> values);
+
+  /**
+   * Ignores null or empty value version of {@link #in(String, Collection)}.
+   */
+  ExpressionList<T> inIfNotEmpty(String propertyName, Collection<?> values);
 
   /**
    * Not In - property has a value in the array of values.
@@ -801,9 +906,19 @@ public interface ExpressionList<T> {
   ExpressionList<T> notIn(String propertyName, Object... values);
 
   /**
+   * Ignores null or empty value version of {@link #in(String, Object...)}.
+   */
+  ExpressionList<T> notInIfNotEmpty(String propertyName, Object... values);
+
+  /**
    * Not In - property has a value in the collection of values.
    */
   ExpressionList<T> notIn(String propertyName, Collection<?> values);
+
+  /**
+   * Ignores null or empty value version of {@link #notIn(String, Collection)}.
+   */
+  ExpressionList<T> notInIfNotEmpty(String propertyName, Collection<?> values);
 
   /**
    * Not In - using a subQuery.
@@ -816,7 +931,7 @@ public interface ExpressionList<T> {
   ExpressionList<T> isEmpty(String propertyName);
 
   /**
-   * Is not empty expression for collection properties.
+   * Ignores null or empty value version of {@link #isEmpty(String)}.
    */
   ExpressionList<T> isNotEmpty(String propertyName);
 
@@ -836,14 +951,29 @@ public interface ExpressionList<T> {
   ExpressionList<T> idIn(Object... idValues);
 
   /**
+   * Ignores null or empty value version of {@link #idIn(Object...)}.
+   */
+  ExpressionList<T> idInIfNotEmpty(Object... idValues);
+
+  /**
    * Id IN a collection of id values.
    */
   ExpressionList<T> idIn(Collection<?> idValues);
 
   /**
+   * Ignores null or empty value version of {@link #idIn(Collection)}.
+   */
+  ExpressionList<T> idInIfNotEmpty(Collection<?> idValues);
+
+  /**
    * Id Equal to - ID property is equal to the value.
    */
   ExpressionList<T> idEq(Object value);
+
+  /**
+   * Ignores null or empty value version of {@link #idEq(Object)}.
+   */
+  ExpressionList<T> idEqIfNotEmpty(Object value);
 
   /**
    * All Equal - Map containing property names and their values.
